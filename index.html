@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartOptimizeScud</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <header>
+        <ul class="list-group">
+            <li class="list-group-item fs-6">Статус: <span id="statusView">Отсутсвует</span></li>
+            <li class="list-group-item fs-6">Номер карты: <span id="numberDoc">нет данных</span></li>
+            <li class="list-group-item fs-6">Код PERCO: <span id="codeSCUD">нет данных</span></li>
+            <li class="list-group-item fs-6">Код карты: <span id="codeCard">нет данных</span></li>
+        </ul>
+        <div class="right-btn">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_settings">Настройки</button>
+            <button type="button" class="btn btn-primary" id="printXLSX">Печать XLSX</button>
+            <button type="button" class="btn btn-primary" id="saveData">Сохранить в память</button>
+        </div>
+    </header>
+    <div class="br"></div>
+    <main>
+        <table class="table table-bordered table-hover" id="view-data-table">
+            <thead>
+                <tr>
+                    <th scope="col" >№</th>
+                    <th scope="col" >Номер карты</th>
+                    <th scope="col" >Код PERCO</th>
+                    <th scope="col" >Текст печати</th>
+                </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row"><p></p></th>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p></p></td>
+              </tr>
+              <tr>
+                <th scope="row"><p></p></th>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p></p></td>
+              </tr>
+              <tr>
+                <th scope="row"><p></p></th>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p></p></td>
+              </tr>
+              <tr>
+                <th scope="row"><p></p></th>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p></p></td>
+              </tr>
+              <tr>
+                <th scope="row"><p></p></th>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p></p></td>
+              </tr>
+              <tr>
+                <th scope="row"><p></p></th>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p></p></td>
+              </tr>
+              <tr>
+                <th scope="row"><p></p></th>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p></p></td>
+              </tr>
+              
+            </tbody>
+          </table>
+    </main>
+    <footer>
+        <div class="left">Всего: <span id="viewCountAll">-</span></div>
+        <div class="left">Проверено: <span id="viewCountDone">-</span></div>
+        <div class="left">Не проверено: <span id="viewCountNotDone">-</span></div>
+    </footer>
+
+  
+  <!-- Modal -->
+  <div class="modal fade" id="modal_settings" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+      <form class="modal-content" enctype="multipart/form-data" id="form-data-import" method="post" action="">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Импорт XLSX</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="padding: 20px 60px;">
+          
+            <div class="input-group mb-3">
+              <input type="file" class="form-control" id="importFiles" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+            </div>
+            <div class="d-flex flex-row justify-content-between mb-3">
+              <div class="form-floating flex-fill">
+                <select class="form-select" id="importRange" name="range" required>
+                  <option value="None" selected>Не выбран</option>
+                </select>
+                <label for="importRange">Диапазон таблицы</label>
+              </div>
+              <div class="form-floating flex-fill ms-3">
+                <select class="form-select" id="importSelectSearchCard" required>
+                  <option selected value="/([0-9]*-[0-9]*-[0-9]*\/[0-9]*)/g">Стандартый</option>
+                  <option value="">Свой</option>
+                </select>
+                <label for="importSelectSearchCard">Шаблон поиска карты</label>
+              </div>
+              <div class="form-floating flex-fill ms-3">
+                <select class="form-select" id="importSelectSearchCardCode" required>
+                  <option selected value="/([0-9]*\/[0-9]*)/g">Стандартый</option>
+                  <option value="">Свой</option>
+                </select>
+                <label for="importSelectSearchCardCode">Шаблон поиска кода</label>
+              </div>
+              
+            </div>
+            <div class="d-flex mb-3 align-items-center">
+              <div class="input-group">
+                <span class="input-group-text">Поиск карты</span>
+                <input type="text" class="form-control" id="importSeacrhCard" name="seacrhCard" value="/([0-9]*-[0-9]*-[0-9]*\/[0-9]*)/g" required>
+              </div>
+              <div class="input-group ms-3">
+                <span class="input-group-text">Поиск кода</span>
+                <input type="text" class="form-control" id="importSeacrhCardCode" name="seacrhCardCode" value="/([0-9]*\/[0-9]*)/g" required>
+              </div>
+            </div>
+            <div class="d-flex mb-3 align-items-center">
+              <div class="input-group">
+                <span class="input-group-text">Префикс номера</span>
+                <input type="text" class="form-control" id="importBeforeText" name="beforeText">
+              </div>
+              <div class="input-group ms-3">
+                <span class="input-group-text">Конец номера</span>
+                <input type="text" class="form-control" id="importAfterText" name="afterText">
+              </div>
+            </div>
+            <div class="view-table">
+              <table class="table table-bordered" id="table_import">
+                <thead>
+                    <tr class="table-sticky">
+                        <th scope="col">A</th>
+                        <th scope="col">B</th>
+                        <th scope="col">C</th>
+                        <th scope="col">D</th>
+                        <th scope="col">E</th>
+                        <th scope="col">F</th>
+                        <th scope="col">G</th>
+                    </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td scope="row"><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                  </tr>
+                  <tr>
+                    <td scope="row"><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                  </tr>
+                  <tr>
+                    <td scope="row"><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                  </tr>
+                  <tr>
+                    <td scope="row"><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                  </tr>
+                  <tr>
+                    <td scope="row"><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                  </tr>
+                  <tr>
+                    <td scope="row"><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                  </tr>
+                  <tr>
+                    <td scope="row"><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                    <td><p></p></td>
+                  </tr>
+                  
+                  
+                </tbody>
+              </table>
+            </div>
+          
+        </div>
+        <div class="modal-footer">
+          <span class="badge text-bg-success" id="alert-success">Изменения успешно применены!</span>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Назад</button>
+          <button type="submit" class="btn btn-primary" id="submit_import">Применить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <div id="context_menu">
+    <ul class="dropdown-menu d-grid gap-1 p-2 rounded-3 mx-0 shadow " data-bs-theme="light">
+      <li><a class="dropdown-item rounded-2" data-event="setSelected">Выделить</a></li>
+      <li><a class="dropdown-item rounded-2" data-event="setNotSelected">Убрать выделение</a></li>
+    </ul>
+  </div>
+
+  <div class="mobileView">
+    <div>К сожалению данное веб-приложение не может работать с низким разрешением экрана </div>
+  </div>
+
+  <script src="./lib/xlsx.full.min.js"></script>
+  <script src="./lib/popper.min.js"></script>
+  <script src="./lib/bootstrap.min.js"></script>
+  <script src="./main.js"></script>
+</body>
+</html>
